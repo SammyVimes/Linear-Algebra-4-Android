@@ -1,0 +1,69 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/scrollView1"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+	<RelativeLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content">
+	
+	    <TextView
+	        android:id="@+id/textView1"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentTop="true"
+	        android:layout_centerHorizontal="true"
+	        android:text="@string/enter_matrix"
+	        android:textAppearance="?android:attr/textAppearanceLarge" />
+	
+	    <TextView
+	        android:id="@+id/centerView"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_below="@+id/textView1"
+	        android:layout_centerHorizontal="true"
+	        android:text="" />
+	
+	    <Spinner
+	        android:id="@+id/spinnerCols"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignLeft="@+id/centerView"
+	        android:layout_alignParentRight="true"
+	        android:layout_below="@+id/textView1" />
+	
+	    <Spinner
+	        android:id="@+id/spinnerRows"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentLeft="true"
+	        android:layout_alignRight="@+id/centerView"
+	        android:layout_below="@+id/textView1" />
+	
+	    <TableLayout
+	        android:id="@+id/matrixTable"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_below="@+id/spinnerCols"
+	        android:layout_centerHorizontal="true" >
+	    </TableLayout>
+	    
+	     <Spinner
+	         android:id="@+id/spinnerActions"
+	         android:layout_width="wrap_content"
+	         android:layout_height="wrap_content"
+	         android:layout_alignParentLeft="true"
+	         android:layout_alignRight="@+id/centerView"
+	         android:layout_below="@+id/matrixTable" />
+	     
+	     <Button
+	         android:id="@+id/actionButton"
+	         android:layout_width="wrap_content"
+	         android:layout_height="wrap_content"
+	         android:layout_alignLeft="@+id/centerView"
+	         android:layout_alignParentRight="true"
+	         android:layout_below="@+id/matrixTable"
+	         android:text="@string/action" />
+	
+	</RelativeLayout>
+</ScrollView>

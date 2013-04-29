@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Linear Algebra</string>
+    <string name="enter_matrix">Enter the matrix</string>
+    <string name="menu_settings">Settings</string>
+    <string name="enjoy">Enjoy</string>
+    <string name="action">Action</string>
+    <string name="ok">OK</string>
+    <string name="determinant">Determinant =</string>
+    <string name="rank">Rank =</string>
+    <string name="eigen_values">Eigen values =</string>
+    <string name="title_activity_result">ResultActivity</string>
+
+</resources>

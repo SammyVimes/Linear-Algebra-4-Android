@@ -1,0 +1,52 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/scrollView1"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:text="@string/enjoy"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+    
+        <TextView
+            android:id="@+id/centerView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textView1"
+            android:layout_centerHorizontal="true"
+            android:text="" />
+
+        <Spinner
+            android:id="@+id/spinnerShow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/centerView" />
+    
+        <TableLayout
+            android:id="@+id/matrixTable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/spinnerShow"
+            android:layout_centerHorizontal="true" >
+        </TableLayout>
+        
+        <TextView
+            android:id="@+id/textView"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/matrixTable"
+            android:layout_centerHorizontal="true"
+            android:text="" />
+    
+    
+    </RelativeLayout>
+</ScrollView>
