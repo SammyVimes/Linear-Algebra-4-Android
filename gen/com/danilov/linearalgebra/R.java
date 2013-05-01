@@ -8,6 +8,11 @@
 package com.danilov.linearalgebra;
 
 public final class R {
+    public static final class array {
+        public static final int array_action=0x7f0b0000;
+        public static final int array_spinner_actions=0x7f0b0001;
+        public static final int array_spinner_eigen=0x7f0b0002;
+    }
     public static final class attr {
         /**  Custom divider drawable to use for elements in the action bar. 
          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
@@ -1016,8 +1021,8 @@ containing a value of this type.
         public static final int sherlock_spinner_item=0x7f03001a;
     }
     public static final class menu {
-        public static final int activity_main=0x7f0b0000;
-        public static final int activity_result=0x7f0b0001;
+        public static final int activity_main=0x7f0c0000;
+        public static final int activity_result=0x7f0c0001;
     }
     public static final class string {
         /**  Content description for the action bar "home" affordance. [CHAR LIMIT=NONE] 

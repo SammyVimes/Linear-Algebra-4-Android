@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array
+        name="array_action">
+        <item>ACTION_DETERMINANT</item>
+        <item>ACTION_EIGEN</item>
+    </string-array>
+    
+    <string-array
+        name="array_spinner_actions">
+        <item>Determinant and rank</item>
+        <item>Eigen</item>
+    </string-array>
+    
+    <string-array
+        name="array_spinner_eigen">
+        <item>Eigen vector matrix</item>
+        <item>Diagonal eigenvalue matrix</item>
+    </string-array>
+
+</resources>

@@ -1,3 +1,6 @@
+int array array_action 0x7f0b0000
+int array array_spinner_actions 0x7f0b0001
+int array array_spinner_eigen 0x7f0b0002
 int attr actionBarDivider 0x7f01000e
 int attr actionBarItemBackground 0x7f01000f
 int attr actionBarSize 0x7f01000d
@@ -333,8 +336,8 @@ int layout activity_main 0x7f030017
 int layout activity_result 0x7f030018
 int layout sherlock_spinner_dropdown_item 0x7f030019
 int layout sherlock_spinner_item 0x7f03001a
-int menu activity_main 0x7f0b0000
-int menu activity_result 0x7f0b0001
+int menu activity_main 0x7f0c0000
+int menu activity_result 0x7f0c0001
 int string abs__action_bar_home_description 0x7f090000
 int string abs__action_bar_up_description 0x7f090001
 int string abs__action_menu_overflow_description 0x7f090002

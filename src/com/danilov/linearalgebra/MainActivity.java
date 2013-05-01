@@ -17,38 +17,38 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 
 public class MainActivity extends SherlockFragmentActivity {
 	
-	public static String ACTION_EIGEN = "EIGEN";
 	public static String MATRIX = "MATRIX";
 	public static String COLUMNS = "COLUMNS";
 	public static String ROWS = "ROWS";
 	public static String EIGEN_VALUES = "EIGEN_VALUES";
 	public static String DIAGONAL_EIGENVALUE_MATRIX = "DIAGONAL_EIGENVALUE_MATRIX";
 	public static String EIGEN_VECTOR_MATRIX = "EIGEN_VECTOR_MATRIX";
-	public static String ACTION_DETERMINANT = "ACTION_DETERMINANT";
+	public static int ACTION_DETERMINANT = 0;
+	public static int ACTION_EIGEN = 1;
 	
 	
+	private Resources resources;
 	private int matrixRows = 2;
 	private int matrixCols = 2;
 	private ArrayList<EditText> editableTextFields = new ArrayList<EditText>();
 	private TableLayout table;
-	private String curAction = "";
+	private int curAction = 0;
 	String[] numbers = {"2", "3", "4", "5", "6"};
-	String[] actions = {"Eigen", "Determinant and rank"};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		resources = getResources();
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, numbers);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        ArrayAdapter<String> actionsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, actions);
-        actionsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         Spinner spinnerRows = (Spinner) findViewById(R.id.spinnerRows);
         spinnerRows.setAdapter(adapter);
         spinnerRows.setPrompt("Rows"); 
@@ -59,6 +59,9 @@ public class MainActivity extends SherlockFragmentActivity {
         spinnerCols.setPrompt("Cols");
     	spinnerCols.setOnItemSelectedListener(new ItemSelectedListener());
     	
+    	String actions[] = resources.getStringArray(R.array.array_spinner_actions);
+    	ArrayAdapter<String> actionsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, actions);
+        actionsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         Spinner spinnerActions = (Spinner) findViewById(R.id.spinnerActions);
         spinnerActions.setAdapter(actionsAdapter);
         spinnerActions.setPrompt("Actions");
@@ -81,13 +84,21 @@ public class MainActivity extends SherlockFragmentActivity {
 	}
 	
 	private void processEigen(){
-		Eigen eigen = new Eigen(getMatrixFromTable());
+		if(matrixCols != matrixRows){
+			easyDialog("Matrix must be square");//TODO: USE RESOURCES, EVERYWHERE! RESOURCES!!!
+			return;
+		}
+		Matrix matrix = getMatrixFromTable();
+		if(matrix == null){
+			return;
+		}
+		Eigen eigen = new Eigen(matrix);
 		eigen.solve();
 		Matrix eigenVectorMatrix = eigen.getEigenVectorMatrix();
 		Matrix diagonalEigenvalueMatrix = eigen.getDiagonalEigenMatrix();
 		double[] eigenValues = eigen.getEigenValues();
 		Intent intent = new Intent(this, ResultActivity.class);
-		intent.setAction(ACTION_EIGEN);
+		intent.setAction(resources.getStringArray(R.array.array_action)[curAction]);
 		intent.putExtra(EIGEN_VECTOR_MATRIX, eigenVectorMatrix);
 		intent.putExtra(DIAGONAL_EIGENVALUE_MATRIX, diagonalEigenvalueMatrix);
 		intent.putExtra(EIGEN_VALUES, eigenValues);
@@ -96,31 +107,78 @@ public class MainActivity extends SherlockFragmentActivity {
 	
 	private void processDeterminantAndRank() {
 		Matrix matrix = getMatrixFromTable();
+		if(matrix == null){
+			return;
+		}
 		int matrixRank = matrix.rank();
-		int matrixDeterminant = (int) matrix.det();
+		int matrixDeterminant = 0;
+		boolean isSquare = false;
+		if(matrixCols == matrixRows){
+			isSquare = true;
+			matrixDeterminant = (int) matrix.det();
+		}
 		Resources res = this.getResources();
 		String det = res.getString(R.string.determinant);
 		String rank = res.getString(R.string.rank);
-		String message = det + " " + matrixDeterminant + "\n"+ 
-		rank + " " + matrixRank;
-		MyDialogFragment dialog = new MyDialogFragment();
-		dialog.setMessage(message);
-		dialog.show(getSupportFragmentManager(), "dlg");
+		String message = rank + " " + matrixRank + "\n";
+		if(isSquare){
+			message = message + det + " " + matrixDeterminant;
+		}else{
+			message = message + "Only square matrix has determinant!";
+		}
+		easyDialog(message);
 	}
 	
 	private Matrix getMatrixFromTable(){
+		boolean hasNonValidSymbols = false;
+		Matrix matrix = null;
 		double[][] values = new double[matrixRows][matrixCols];
 		for(int i = 0; i < matrixRows; i++){
 			for(int j = 0; j < matrixCols; j++){
 				EditText et = editableTextFields.get(i*matrixCols + j);
 				String tmp = et.getText().toString();
-				if(!tmp.equals("")){
-					values[i][j] = new Double(tmp);
+				if(hasInvalidSymbols(tmp)){
+					hasNonValidSymbols = true;
+					break;
+				}else{
+					tmp = handleSlashSymbol(tmp);
+					if(!tmp.equals("")){
+						values[i][j] = new Double(tmp);
+					}
 				}
 			}
+			if(hasNonValidSymbols){
+				matrix = null;
+				break;
+			}
 		}
-		Matrix matrix = new Matrix(values);
+		if(!hasNonValidSymbols){
+			matrix = new Matrix(values);
+		}
 		return matrix;
+	}
+	
+	private boolean hasInvalidSymbols(String string){
+		boolean result = false;
+		if(string.contains(":")){
+			easyDialog("Matrix has non valid symbols");
+			result = true;
+		}
+		return result;
+	}
+	
+	private String handleSlashSymbol(String string){
+		String result;
+		if(string.contains("/")){
+			int slashPos = string.indexOf("/");
+			String firstPart = string.substring(0, slashPos);
+			String secondPart = string.substring(slashPos + 1, string.length());
+			Double tmp = new Double(new Double(firstPart)/new Double(secondPart));
+			result = tmp.toString();
+		}else{
+			return string;
+		}
+		return result;
 	}
 	
 	private void updateMatrixTable(){
@@ -130,7 +188,7 @@ public class MainActivity extends SherlockFragmentActivity {
 			EditText et = new EditText(this);
 			et.setWidth(50);
 			et.setHeight(50);
-			et.setInputType(InputType.TYPE_CLASS_NUMBER);
+			et.setInputType(InputType.TYPE_CLASS_DATETIME);
 			editableTextFields.add(et);
 		}
 		for(int i = 0; i < matrixRows; i++){
@@ -146,10 +204,10 @@ public class MainActivity extends SherlockFragmentActivity {
 		table.removeAllViews();
 	}
 	
-	private void onActionButtonPressed(String action){
-		if(action.equals(ACTION_EIGEN)){
+	private void onActionButtonPressed(int action){
+		if(action == ACTION_EIGEN){
 			processEigen();
-		}else if(action.equals(ACTION_DETERMINANT)){
+		}else if(action == ACTION_DETERMINANT){
 			processDeterminantAndRank();
 		}
 	}
@@ -191,10 +249,10 @@ public class MainActivity extends SherlockFragmentActivity {
 					}
 					break;
 				case R.id.spinnerActions:
-					if(actions[position].equals("Eigen")){
+					if(position == ACTION_EIGEN){
 						curAction = ACTION_EIGEN;
 					}
-					if(actions[position].equals("Determinant and rank")){
+					if(position == ACTION_DETERMINANT){
 						curAction = ACTION_DETERMINANT;
 					}
 					break;
@@ -218,9 +276,11 @@ public class MainActivity extends SherlockFragmentActivity {
 	@Override
 	public void onSaveInstanceState(Bundle state){
 		Matrix m = getMatrixFromTable();
-		state.putSerializable(MATRIX, getMatrixFromTable());
-		state.putInt(ROWS, m.getRowDimension());
-		state.putInt(COLUMNS, m.getColumnDimension());
+		if(m != null){
+			state.putSerializable(MATRIX, m);
+			state.putInt(ROWS, m.getRowDimension());
+			state.putInt(COLUMNS, m.getColumnDimension());
+		}
 		super.onSaveInstanceState(state);
 	}
 	
@@ -228,6 +288,17 @@ public class MainActivity extends SherlockFragmentActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getSupportMenuInflater().inflate(R.menu.activity_main, menu);
 		return true;
+	}
+	
+	private void toaster(String message){
+		Toast t = Toast.makeText(this, message, Toast.LENGTH_LONG);
+		t.show();
+	}
+	
+	private void easyDialog(String message){
+		MyDialogFragment dialog = new MyDialogFragment();
+		dialog.setMessage(message);
+		dialog.show(getSupportFragmentManager(), "dlg");
 	}
 
 }

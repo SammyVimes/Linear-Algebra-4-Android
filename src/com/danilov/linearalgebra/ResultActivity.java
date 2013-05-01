@@ -21,29 +21,29 @@ import com.actionbarsherlock.view.Menu;
 
 public class ResultActivity extends SherlockActivity {
 	
-	private String intentAction = "";
+	private int action = 0;
 	private TableLayout table;
 	private Spinner spinner;
 	private ArrayList<TextView> matrixCells = new ArrayList<TextView>();
 	Matrix eigenVectorMatrix = null;
 	Matrix diagonalEigenvalueMatrix = null;
-	private String[] eigenActionContent = {"Eigen vector matrix", "Diagonal eigenvalue matrix"};
+	Resources resources;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_result);
-		String intentAction = getIntent().getAction();
+		resources = getResources();
 		table = (TableLayout)findViewById(R.id.matrixTable);
 		spinner = (Spinner)findViewById(R.id.spinnerShow);
-		if(!"".equals(intentAction)){
-			handleIntentAction(getIntent());
-		}
+		handleIntentAction(getIntent());
 	}
 	
 	private void handleIntentAction(Intent intent){
-		intentAction = intent.getAction();
-		if(intentAction.equals(MainActivity.ACTION_EIGEN)){
+		String intentAction = intent.getAction();
+		String[] actions = resources.getStringArray(R.array.array_action);
+		if(intentAction.equals(actions[MainActivity.ACTION_EIGEN])){
+			action = MainActivity.ACTION_EIGEN;
 			onEigenAction(intent);
 		}
 		setSpinnerContent();
@@ -57,7 +57,9 @@ public class ResultActivity extends SherlockActivity {
 		Resources res = this.getResources();
 		String text = res.getString(R.string.eigen_values) + " [";
 		for(int i = 0; i < eigenValues.length; i++){
-			text = text + eigenValues[i];
+			String eigenValue = "" + eigenValues[i];
+			eigenValue = handleLongNumber(eigenValue);
+			text = text + eigenValue;
 			if(i != eigenValues.length - 1){
 				text = text + ", ";
 			}
@@ -65,6 +67,20 @@ public class ResultActivity extends SherlockActivity {
 		text = text + "]";
 		tv.setText(text);
 		tv.setVisibility(View.VISIBLE);
+	}
+	
+	private String handleLongNumber(String number){
+		String result = number;
+		int dotPosition = number.indexOf(".");
+		int length = number.length();
+		int finish = length;
+		if(dotPosition != -1){
+			if(dotPosition + 3 < finish){
+				finish = dotPosition + 3;
+			}
+			result = number.substring(0, finish);
+		}
+		return result;
 	}
 	
 	private void showMatrix(Matrix matrix){
@@ -76,8 +92,9 @@ public class ResultActivity extends SherlockActivity {
 			TextView tv = new TextView(this);
 			tv.setWidth(50);
 			tv.setHeight(50);
-			Double element = new Double(matrix.get(i/matrixCols, i%matrixCols));
-			tv.setText(element.toString());
+			String element = (new Double(matrix.get(i/matrixCols, i%matrixCols))).toString();
+			element = handleLongNumber(element);
+			tv.setText(element);
 			matrixCells.add(tv);
 		}
 		for(int i = 0; i < matrixRows; i++){
@@ -95,8 +112,9 @@ public class ResultActivity extends SherlockActivity {
 	
 	private void setSpinnerContent(){
 		ArrayAdapter<String> adapter = null;
-		if(intentAction.equals(MainActivity.ACTION_EIGEN)){
-			adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, eigenActionContent);
+		if(action == MainActivity.ACTION_EIGEN){
+			String[] eigen = resources.getStringArray(R.array.array_spinner_eigen);
+			adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, eigen);
 		}
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spinner.setAdapter(adapter);
@@ -110,7 +128,7 @@ public class ResultActivity extends SherlockActivity {
 		@Override
 		public void onItemSelected(AdapterView<?> arg0, View arg1, int position,
 				long arg3) {
-			if(intentAction.equals(MainActivity.ACTION_EIGEN)){
+			if(action == MainActivity.ACTION_EIGEN){
 				if(position == 0){
 					showMatrix(eigenVectorMatrix);
 				}else{
