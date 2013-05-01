@@ -4,15 +4,17 @@ import java.util.ArrayList;
 
 public class Gauss {
 	
-	private ArrayList<Fraction> matrix;
+	private ArrayList<Fraction> matrix = new ArrayList<Fraction>();
 	private int rows;
 	private int columns;
 	
 	
-	public Gauss(ArrayList<Fraction> matrix, int rows, int columns){
+	public Gauss(ArrayList<String> matrix, int rows, int columns){
 		this.columns = columns;
 		this.rows = rows;
-		this.matrix = matrix;
+		for(int i = 0; i < matrix.size(); i++){
+			this.matrix.add(new Fraction(matrix.get(i)));
+		}
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -37,7 +39,7 @@ public class Gauss {
 	        }
         
 	        for (int j = i + 1; j < rows; j++){
-	            for (int k=i; k<columns; k++){
+	            for (int k = i; k < columns; k++){
 	                Fraction tmp1 = matrix.get(j * columns + k);
 	                Fraction tmp2 = matrix.get(i * columns + k).multiply(tmpMatrix.get(j * columns + i));
 	                Fraction tmp3 = tmp2.divide(matrix.get(i * columns + i));
@@ -45,9 +47,15 @@ public class Gauss {
 	                matrix.set(j * columns + k, res);
 	            }                
 	        }
-	        int a = 0;
-	        a++;
 	    }
+	}
+	
+	public ArrayList<String> getMatrix(){
+		ArrayList<String> matrix = new ArrayList<String>();
+		for(int i = 0; i < this.matrix.size(); i++){
+			matrix.add(this.matrix.get(i).toString());
+		}
+		return matrix;
 	}
 	
 	

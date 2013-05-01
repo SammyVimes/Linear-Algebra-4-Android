@@ -46,7 +46,22 @@ public class ResultActivity extends SherlockActivity {
 			action = MainActivity.ACTION_EIGEN;
 			onEigenAction(intent);
 		}
+		if(intentAction.equals(actions[MainActivity.ACTION_GAUSS])){
+			action = MainActivity.ACTION_GAUSS;
+			onGaussAction(intent);
+		}
 		setSpinnerContent();
+	}
+	
+	private void onGaussAction(Intent intent){
+		String[] tmp = intent.getStringArrayExtra(MainActivity.MATRIX);
+		int rows = intent.getIntExtra(MainActivity.ROWS, -1);
+		int columns = intent.getIntExtra(MainActivity.COLUMNS, -1);
+		ArrayList<String> matrix = new ArrayList<String>();
+		for(int i = 0; i < tmp.length; i++){
+			matrix.add(tmp[i]);
+		}
+		showStringMatrix(matrix, rows, columns);
 	}
 	
 	private void onEigenAction(Intent intent){
@@ -83,6 +98,26 @@ public class ResultActivity extends SherlockActivity {
 		return result;
 	}
 	
+	private void showStringMatrix(ArrayList<String> matrix, int rows, int columns){
+		eraseTable();
+		matrixCells.clear();
+		for(int i = 0; i < rows*columns; i++){
+			TextView tv = new TextView(this);
+			tv.setWidth(50);
+			tv.setHeight(50);
+			String element = matrix.get(i);
+			tv.setText(element);
+			matrixCells.add(tv);
+		}
+		for(int i = 0; i < rows; i++){
+			TableRow rowTitle = new TableRow(this);
+			for(int j = 0; j < columns; j++){
+				rowTitle.addView(matrixCells.get(i*columns + j));
+			}
+			table.addView(rowTitle);
+		}
+	}
+	
 	private void showMatrix(Matrix matrix){
 		int matrixRows = matrix.getColumnDimension();
 		int matrixCols = matrix.getRowDimension(); 
@@ -115,12 +150,15 @@ public class ResultActivity extends SherlockActivity {
 		if(action == MainActivity.ACTION_EIGEN){
 			String[] eigen = resources.getStringArray(R.array.array_spinner_eigen);
 			adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, eigen);
+			spinner.setVisibility(View.VISIBLE);
 		}
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		spinner.setAdapter(adapter);
-		spinner.setPrompt("Action"); 
-		spinner.setSelection(0);
-		spinner.setOnItemSelectedListener(new ItemSelectedListener());
+		if(adapter != null){
+			adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			spinner.setAdapter(adapter);
+			spinner.setPrompt("Action"); 
+			spinner.setSelection(0);
+			spinner.setOnItemSelectedListener(new ItemSelectedListener());
+		}
 	}
 	
 	private class ItemSelectedListener implements OnItemSelectedListener{

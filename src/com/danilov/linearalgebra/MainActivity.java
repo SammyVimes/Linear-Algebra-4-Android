@@ -85,12 +85,24 @@ public class MainActivity extends SherlockFragmentActivity {
 	}
 	
 	private void processGauss(){
-		ArrayList<Fraction>tmp = new ArrayList<Fraction>();
-		for(int i = 0; i < 9; i++){
-			tmp.add(new Fraction(i + 1));
+		ArrayList<String> matrix = getStringMatrixFromTable();
+		if(matrix == null){
+			easyDialog("Only integers are allowed for Gauss`s Method!");
+			return;
 		}
-		Gauss g = new Gauss(tmp, 3, 3);
-		g.solve();
+		Gauss gauss = new Gauss(matrix, matrixRows, matrixCols);
+		gauss.solve();
+		ArrayList<String> tmp = gauss.getMatrix();
+		String[] solvedMatrix = new String[tmp.size()];
+		for(int i = 0; i < tmp.size(); i++){
+			solvedMatrix[i] = tmp.get(i);
+		}
+		Intent intent = new Intent(this, ResultActivity.class);
+		intent.setAction(resources.getStringArray(R.array.array_action)[curAction]);
+		intent.putExtra(ROWS, matrixRows);
+		intent.putExtra(COLUMNS, matrixCols);
+		intent.putExtra(MATRIX, solvedMatrix);
+		startActivity(intent);
 	}
 	
 	private void processEigen(){
@@ -168,9 +180,36 @@ public class MainActivity extends SherlockFragmentActivity {
 		return matrix;
 	}
 	
+	private ArrayList<String> getStringMatrixFromTable(){
+		ArrayList<String> matrix = new ArrayList<String>();
+		boolean hasNonValidSymbols = false;
+		for(int i = 0; i < editableTextFields.size(); i++){
+			String tmp = editableTextFields.get(i).getText().toString();
+			if(hasInvalidForGaussSymbols(tmp)){
+				hasNonValidSymbols = true;
+				break;
+			}
+			matrix.add(tmp);
+		}
+		if(hasNonValidSymbols){
+			matrix = null;
+		}
+		return matrix;
+		
+	}
+	
 	private boolean hasInvalidSymbols(String string){
 		boolean result = false;
 		if(string.contains(":")){
+			easyDialog("Matrix has non valid symbols");
+			result = true;
+		}
+		return result;
+	}
+	
+	private boolean hasInvalidForGaussSymbols(String string){
+		boolean result = false;
+		if(string.contains(":") || string.contains(".") || string.contains(",")){
 			easyDialog("Matrix has non valid symbols");
 			result = true;
 		}
@@ -283,9 +322,20 @@ public class MainActivity extends SherlockFragmentActivity {
 	private void restoreMatrixState(Matrix matrix){
 		updateMatrixTable();
 		for(int i = 0; i < editableTextFields.size(); i++){
-			Double element = new Double(matrix.get(i/matrixCols, i%matrixCols));
-			editableTextFields.get(i).setText(element.toString());
+			double element = Double.valueOf(matrix.get(i/matrixCols, i%matrixCols));
+			editableTextFields.get(i).setText(getProperDoubles(new String(element + "")));
 		}
+	}
+	
+	private String getProperDoubles(String str){
+		String result = str;
+		int dotPosition = str.indexOf(".");
+		if(dotPosition != -1){
+			if('0' == result.charAt(dotPosition + 1)){
+				result = result.substring(0, dotPosition);
+			}
+		}
+		return result;
 	}
 	
 	@Override

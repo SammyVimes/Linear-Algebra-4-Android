@@ -45,7 +45,16 @@ public class Fraction {
 	public Fraction plus(Fraction addingValue){
 		Fraction result = null;
 		int tmpNumerator;
-		if(this.denominator == addingValue.denominator){
+		if(getDenominator() == 0){
+			if(addingValue.getDenominator() == 0){
+				return new Fraction(0);
+			}else{
+				return addingValue;
+			}
+		}else if(addingValue.getDenominator() == 0){
+			return this;
+		}
+		if(getDenominator() == addingValue.getDenominator()){
 			tmpNumerator = getNumerator() + addingValue.getNumerator();
 			result =new Fraction(tmpNumerator, getDenominator());
 		}else{
