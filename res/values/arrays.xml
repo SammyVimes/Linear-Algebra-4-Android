@@ -4,12 +4,14 @@
         name="array_action">
         <item>ACTION_DETERMINANT</item>
         <item>ACTION_EIGEN</item>
+        <item>ACTION_GAUSS</item>
     </string-array>
     
     <string-array
         name="array_spinner_actions">
         <item>Determinant and rank</item>
         <item>Eigen</item>
+        <item>Gauss</item>
     </string-array>
     
     <string-array

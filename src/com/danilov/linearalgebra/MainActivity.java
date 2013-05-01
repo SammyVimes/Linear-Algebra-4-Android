@@ -32,6 +32,7 @@ public class MainActivity extends SherlockFragmentActivity {
 	public static String EIGEN_VECTOR_MATRIX = "EIGEN_VECTOR_MATRIX";
 	public static int ACTION_DETERMINANT = 0;
 	public static int ACTION_EIGEN = 1;
+	public static int ACTION_GAUSS = 2;
 	
 	
 	private Resources resources;
@@ -81,6 +82,15 @@ public class MainActivity extends SherlockFragmentActivity {
         }else{
         	updateMatrixTable();
         }
+	}
+	
+	private void processGauss(){
+		ArrayList<Fraction>tmp = new ArrayList<Fraction>();
+		for(int i = 0; i < 9; i++){
+			tmp.add(new Fraction(i + 1));
+		}
+		Gauss g = new Gauss(tmp, 3, 3);
+		g.solve();
 	}
 	
 	private void processEigen(){
@@ -209,6 +219,8 @@ public class MainActivity extends SherlockFragmentActivity {
 			processEigen();
 		}else if(action == ACTION_DETERMINANT){
 			processDeterminantAndRank();
+		}else if(action == ACTION_GAUSS){
+			processGauss();
 		}
 	}
 
@@ -254,6 +266,9 @@ public class MainActivity extends SherlockFragmentActivity {
 					}
 					if(position == ACTION_DETERMINANT){
 						curAction = ACTION_DETERMINANT;
+					}
+					if(position == ACTION_GAUSS){
+						curAction = ACTION_GAUSS;
 					}
 					break;
 			}

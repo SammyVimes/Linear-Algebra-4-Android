@@ -21,14 +21,42 @@ public class Fraction {
 		this.denominator = denominator;
 	}
 	
+	public Fraction(int number){
+		this.numerator = number;
+		this.denominator = 1;
+	}
+	
+	public Fraction multiply(Fraction multiplyValue){
+		Fraction result = null;
+		result = new Fraction(getNumerator()*multiplyValue.getNumerator(),
+				getDenominator()*multiplyValue.getDenominator());
+		result.cutFraction();
+		return result;
+	}
+	
+	public Fraction divide(Fraction multiplyValue){
+		Fraction result = null;
+		result = new Fraction(getNumerator()*multiplyValue.getDenominator(),
+				getDenominator()*multiplyValue.getNumerator());
+		result.cutFraction();
+		return result;
+	}
+	
 	public Fraction plus(Fraction addingValue){
-		Fraction result = new Fraction(null);
+		Fraction result = null;
+		int tmpNumerator;
 		if(this.denominator == addingValue.denominator){
-			int tmpNumerator = getNumerator() + addingValue.getNumerator();
-			result = cutFraction(new Fraction(tmpNumerator, getDenominator()));
+			tmpNumerator = getNumerator() + addingValue.getNumerator();
+			result =new Fraction(tmpNumerator, getDenominator());
 		}else{
-			
+			int addingNumerator = addingValue.getNumerator();
+			int addingDenominator = addingValue.getDenominator();
+			int gcd = getGcd(getDenominator(), addingDenominator);
+			int newDenominator = (getDenominator() * addingDenominator)/gcd;
+			tmpNumerator = ((newDenominator / getDenominator())*getNumerator()) + ((newDenominator/addingDenominator) * addingNumerator);
+			result = new Fraction(tmpNumerator, newDenominator);
 		}
+		result.cutFraction();
 		return result;
 	}
 	
@@ -48,17 +76,18 @@ public class Fraction {
 		return new FractionPair(numerator, denominator);
 	}
 	
-	private Fraction cutFraction(Fraction unCutFraction){
-		Fraction fraction = unCutFraction;
-		int tmpNumerator = fraction.getNumerator();
-		int tmpDenominator = fraction.getDenominator();
+	private void cutFraction(){
+		int tmpNumerator = this.getNumerator();
+		int tmpDenominator = this.getDenominator();
 		boolean numeratorPositive = tmpNumerator >= 0;
 		boolean denominatorPositive = tmpDenominator >= 0;
 		tmpNumerator = Math.abs(tmpNumerator);
 		tmpDenominator = Math.abs(tmpDenominator);
 		if(tmpDenominator == 1){
-			return fraction;
-		}else{
+			return;
+		}else if(tmpDenominator == 0){
+			this.numerator = 0;
+		}else{			
 			int gcd = getGcd(tmpNumerator, tmpDenominator);
 			while(gcd != 1){
 				tmpNumerator = tmpNumerator / gcd;
@@ -71,10 +100,9 @@ public class Fraction {
 			if(!denominatorPositive){
 				tmpDenominator = tmpDenominator * (-1);
 			}
-			fraction = new Fraction(tmpNumerator, tmpDenominator);
+			this.numerator = tmpNumerator;
+			this.denominator = tmpDenominator;
 		}
-		
-		return fraction;
 	}
 	
 	private int getGcd(int a, int b){
@@ -82,6 +110,12 @@ public class Fraction {
 	}
 	
 	public String toString(){
+		if(Math.abs(getDenominator()) == 1){
+			return new String(getNumerator() + "");
+		}
+		if(getNumerator() == 0){
+			return new String("0");
+		}
 		return new String(getNumerator() + "/" + getDenominator());
 	}
 	
