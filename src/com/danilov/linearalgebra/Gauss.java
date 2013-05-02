@@ -21,16 +21,30 @@ public class Gauss {
 	public void solve(){
 		ArrayList<Fraction> tmpMatrix = (ArrayList<Fraction>)matrix.clone();
 		int count;
+		int val = columns;
+		if(rows < columns){
+			val = rows;
+		}
+		int max = columns;
+		if(rows > columns){
+			max = rows;
+		}
 		for (int i = 0; i < columns; i++){
-	        if (matrix.get(i/columns + i).toString().equals("0") && i < rows-1){
-	        count = i;
-	        Fraction tmp = null;
-	            do{
-	            count++;
-	            tmp = matrix.get(count/columns);
-	            }while(tmp.toString().equals("0"));
-	        matrix = swapLine(matrix, count, i);
-	        } 
+			if(i < val){
+		        if (matrix.get(i*columns + i).toString().equals("0") && i < rows-1){
+			        count = i;
+			        Fraction tmp = null;
+			            do{
+				            count++;
+				            if(count*columns < columns*rows){
+				            	tmp = matrix.get(count*columns);
+				            }
+			            }while(tmp.toString().equals("0") && count < max);
+			            if(count < rows){
+			            	matrix = swapLine(matrix, count, i);
+			            }
+		        } 
+			}
 	        
 	        for (int x = 0; x < rows; x++){
 	            for (int y = 0; y < columns; y++){
@@ -69,10 +83,12 @@ public class Gauss {
 		}
 		for(int i = 0; i < matrix.size(); i++){
 			Fraction tmp = null;
-			if(i/rows == line1){
-				tmp = matrix.get(line2 + i%rows);
-			}else if(i/rows == line2){
-				tmp = matrix.get(line1 + i%rows);
+			if(i/columns == line1){
+				tmp = matrix.get(line2*columns + i%columns);
+			}else if(i/columns == line2){
+				tmp = matrix.get(line1*columns + i%columns);
+			}else{
+				tmp = matrix.get(i);
 			}
 			result.add(tmp);
 		}
