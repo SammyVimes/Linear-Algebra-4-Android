@@ -26,11 +26,29 @@ public class Fraction {
 		this.denominator = 1;
 	}
 	
+	public Fraction pow(int n){
+		Fraction powered = this;
+		if(n == 0){
+			return new Fraction(1);
+		}
+		for(int i = 1; i < n; i++){
+			powered = powered.multiply(powered);
+		}
+		powered.cutFraction();
+		return powered;
+	}
+	
 	public Fraction multiply(Fraction multiplyValue){
 		Fraction result = null;
 		result = new Fraction(getNumerator()*multiplyValue.getNumerator(),
 				getDenominator()*multiplyValue.getDenominator());
 		result.cutFraction();
+		return result;
+	}
+	
+	public Fraction inverse(){
+		Fraction result = this;
+		result = result.multiply(new Fraction(-1));
 		return result;
 	}
 	
@@ -93,7 +111,7 @@ public class Fraction {
 		tmpNumerator = Math.abs(tmpNumerator);
 		tmpDenominator = Math.abs(tmpDenominator);
 		if(tmpDenominator == 1){
-			return;
+
 		}else if(tmpDenominator == 0){
 			this.numerator = 0;
 		}else{			
@@ -111,6 +129,13 @@ public class Fraction {
 			}
 			this.numerator = tmpNumerator;
 			this.denominator = tmpDenominator;
+		}
+		if(numeratorPositive && !denominatorPositive){
+			this.numerator *= -1;
+			this.denominator *= -1;
+		}else if(!numeratorPositive && !denominatorPositive){
+			this.numerator *= -1;
+			this.denominator *= -1;
 		}
 	}
 	

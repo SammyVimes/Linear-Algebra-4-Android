@@ -85,18 +85,22 @@ public class MainActivity extends SherlockFragmentActivity {
 	}
 	
 	private void test(){
-		String[] tmp = {"1", "0", "0", "0", "0", "1",
-					     "1", "1", "0", "0", "0","-1"
-					  , "-1", "1", "1", "0", "0","1"
-					  , "1", "-1", "1", "1", "0","-1"
-					  , "-1", "1", "-1", "1", "1", "1"
-					  , "1", "-1", "1", "-1", "1", "-1"};
+//		String[] tmp = {"1", "0", "0", "0", "0", "1",
+//					     "1", "1", "0", "0", "0","-1"
+//					  , "-1", "1", "1", "0", "0","1"
+//					  , "1", "-1", "1", "1", "0","-1"
+//					  , "-1", "1", "-1", "1", "1", "1"
+//					  , "1", "-1", "1", "-1", "1", "-1"};
+		String[] tmp = {"-3","-1","1"
+					   ,"-8","4","1",
+					   "-8","8","-3"};
 		ArrayList<String> matrix = new ArrayList<String>();
 		for(int i = 0; i < tmp.length; i++){
 			matrix.add(tmp[i]);
 		}
-		CharacteristicPolynomial cp = new CharacteristicPolynomial(matrix, 6, 6);
-		Fraction[] coeffs = cp.getPolynomial(6);
+		CharacteristicPolynomial cp = new CharacteristicPolynomial(matrix, 3, 3);
+		Fraction[] coeffs = cp.getPolynomial(3);
+		cp.getEigenValues();
 		int a = 0;
 		a++;
 	}
