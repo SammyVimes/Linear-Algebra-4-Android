@@ -91,7 +91,9 @@ public class CharacteristicPolynomial {
 		for(int i = 0; i < possibleRoots.size(); i++){
 			Fraction sum = new Fraction(0);
 			for(int j = 0; j < size; j++){
-				sum = sum.plus((polynom[size - j - 1]).multiply(possibleRoots.get(i).pow(j)));
+				Fraction coef = polynom[size - j - 1];
+				Fraction xInPow = possibleRoots.get(i).pow(j);
+				sum = sum.plus((coef).multiply(xInPow));
 			}
 			if(sum.getNumerator() == 0){
 				eigenValues.add(possibleRoots.get(i));

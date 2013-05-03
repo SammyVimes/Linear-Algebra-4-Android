@@ -28,11 +28,12 @@ public class Fraction {
 	
 	public Fraction pow(int n){
 		Fraction powered = this;
+		Fraction original = this;
 		if(n == 0){
 			return new Fraction(1);
 		}
 		for(int i = 1; i < n; i++){
-			powered = powered.multiply(powered);
+			powered = powered.multiply(original);
 		}
 		powered.cutFraction();
 		return powered;
