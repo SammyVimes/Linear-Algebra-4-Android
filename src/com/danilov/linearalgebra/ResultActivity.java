@@ -72,8 +72,8 @@ public class ResultActivity extends SherlockActivity {
 		String[] eigenValues = intent.getStringArrayExtra(MainActivity.EIGEN_VALUES);
 		matrixRows = intent.getIntExtra(MainActivity.ROWS, -1);
 		matrixCols = matrixRows;
-		diagonalEigenvalueMatrix = arrayToList(tmpEigenVectorMatrix);
-		eigenVectorMatrix = arrayToList(tmpDiagonalEigenvalueMatrix);
+		eigenVectorMatrix = arrayToList(tmpEigenVectorMatrix);
+		diagonalEigenvalueMatrix = arrayToList(tmpDiagonalEigenvalueMatrix);
 		TextView tv = (TextView)findViewById(R.id.textView);
 		Resources res = this.getResources();
 		String text = res.getString(R.string.eigen_values) + " [";

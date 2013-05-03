@@ -136,6 +136,8 @@ public class MainActivity extends SherlockFragmentActivity {
 		intent.setAction(resources.getStringArray(R.array.array_action)[curAction]);
 		intent.putExtra(EIGEN_VALUES, eigenValues);
 		String[] diagonalEigenvalueMatrix = eigen.getDiagonalEigenMatrix();
+		String[] eigenVectorMatrix = eigen.getEigenVectorMatrix();
+		intent.putExtra(EIGEN_VECTOR_MATRIX, eigenVectorMatrix);
 		intent.putExtra(DIAGONAL_EIGENVALUE_MATRIX, diagonalEigenvalueMatrix);
 		intent.putExtra(ROWS, matrixRows);
 		startActivity(intent);

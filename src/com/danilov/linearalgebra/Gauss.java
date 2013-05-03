@@ -72,6 +72,64 @@ public class Gauss {
 		return matrix;
 	}
 	
+	public String[] getRoots(){
+		String[] roots = new String[columns];
+		Fraction[] tmpRoots = new Fraction[columns];
+		boolean[] presented = new boolean[columns];
+		Fraction[][] m = new Fraction[rows][columns];
+		for(int i = 0; i < matrix.size(); i++){
+			m[i/columns][i%columns] = matrix.get(i); 		
+		}
+		for(int i = 0; i < rows; i++){
+			for(int j = 0; j < columns; j++){
+				if(m[i][j].getDenominator() != 0){
+					presented[j] = true;
+				}
+			}
+			if(getZeros(m[i]) == columns - 1 && presented[i]){
+				tmpRoots[i] = new Fraction(0); 
+			}
+		}
+		for(int i = m.length - 1; i >= 0; i--){
+			if(getZeros(m[i]) == m.length){
+				continue;
+			}
+			int pos = notNullPosition(m[i]);
+			Fraction sum = new Fraction(0);
+			for(int j = m.length - 1; j > pos; j--){
+				if(tmpRoots[j] == null){
+					tmpRoots[j] = new Fraction(1);
+				}
+				sum = sum.plus(tmpRoots[j].multiply(m[i][j]).inverse());
+			}
+			tmpRoots[pos] = sum.divide(m[i][pos]);
+		}
+		for(int i = 0; i < tmpRoots.length; i++){
+			roots[i] = tmpRoots[i].toString();
+		}
+		return roots;
+	}
+	
+	private int notNullPosition(Fraction m[]){
+		int pos = 0;
+		for(int i = 0; i < m.length; i++){
+			if(m[i].getNumerator() != 0){
+				pos = i;
+				break;
+			}
+		}
+		return pos;
+	}
+	
+	private int getZeros(Fraction m[]){
+		int count = 0;
+		for(int i = 0; i < m.length; i++){
+			if(m[i].getDenominator() == 0){
+				count++;
+			}
+		}
+		return count;
+	}
 	
 	
 	private ArrayList<Fraction> swapLine(ArrayList<Fraction> matrix, int line1, int line2){
