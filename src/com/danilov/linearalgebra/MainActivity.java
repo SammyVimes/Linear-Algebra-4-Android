@@ -110,9 +110,7 @@ public class MainActivity extends SherlockFragmentActivity {
 		gauss.solve();
 		ArrayList<String> tmp = gauss.getMatrix();
 		String[] solvedMatrix = new String[tmp.size()];
-		for(int i = 0; i < tmp.size(); i++){
-			solvedMatrix[i] = tmp.get(i);
-		}
+		solvedMatrix = listToString(tmp);
 		Intent intent = new Intent(this, ResultActivity.class);
 		intent.setAction(resources.getStringArray(R.array.array_action)[curAction]);
 		intent.putExtra(ROWS, matrixRows);
@@ -126,22 +124,45 @@ public class MainActivity extends SherlockFragmentActivity {
 			easyDialog("Matrix must be square");//TODO: USE RESOURCES, EVERYWHERE! RESOURCES!!!
 			return;
 		}
-		Matrix matrix = getMatrixFromTable();
+		ArrayList<String> matrix = getStringMatrixFromTable();
 		if(matrix == null){
 			return;
 		}
-		Eigen eigen = new Eigen(matrix);
+		Eigen eigen = new Eigen(matrix, matrixRows, matrixCols);
 		eigen.solve();
-		Matrix eigenVectorMatrix = eigen.getEigenVectorMatrix();
-		Matrix diagonalEigenvalueMatrix = eigen.getDiagonalEigenMatrix();
-		double[] eigenValues = eigen.getEigenValues();
+		ArrayList<Fraction> tmp = eigen.getEigenValues();
+		String[] eigenValues = fractionListToString(tmp);
 		Intent intent = new Intent(this, ResultActivity.class);
 		intent.setAction(resources.getStringArray(R.array.array_action)[curAction]);
-		intent.putExtra(EIGEN_VECTOR_MATRIX, eigenVectorMatrix);
-		intent.putExtra(DIAGONAL_EIGENVALUE_MATRIX, diagonalEigenvalueMatrix);
 		intent.putExtra(EIGEN_VALUES, eigenValues);
+		String[] diagonalEigenvalueMatrix = eigen.getDiagonalEigenMatrix();
+		intent.putExtra(DIAGONAL_EIGENVALUE_MATRIX, diagonalEigenvalueMatrix);
+		intent.putExtra(ROWS, matrixRows);
 		startActivity(intent);
 	}
+
+	
+//	private void processEigen(){
+//		if(matrixCols != matrixRows){
+//			easyDialog("Matrix must be square");//TODO: USE RESOURCES, EVERYWHERE! RESOURCES!!!
+//			return;
+//		}
+//		Matrix matrix = getMatrixFromTable();
+//		if(matrix == null){
+//			return;
+//		}
+//		Eigen eigen = new Eigen(matrix);
+//		eigen.solve();
+//		Matrix eigenVectorMatrix = eigen.getEigenVectorMatrix();
+//		Matrix diagonalEigenvalueMatrix = eigen.getDiagonalEigenMatrix();
+//		double[] eigenValues = eigen.getEigenValues();
+//		Intent intent = new Intent(this, ResultActivity.class);
+//		intent.setAction(resources.getStringArray(R.array.array_action)[curAction]);
+//		intent.putExtra(EIGEN_VECTOR_MATRIX, eigenVectorMatrix);
+//		intent.putExtra(DIAGONAL_EIGENVALUE_MATRIX, diagonalEigenvalueMatrix);
+//		intent.putExtra(EIGEN_VALUES, eigenValues);
+//		startActivity(intent);
+//	}
 	
 	private void processDeterminantAndRank() {
 		Matrix matrix = getMatrixFromTable();
@@ -380,6 +401,22 @@ public class MainActivity extends SherlockFragmentActivity {
 		MyDialogFragment dialog = new MyDialogFragment();
 		dialog.setMessage(message);
 		dialog.show(getSupportFragmentManager(), "dlg");
+	}
+	
+	private String[] listToString(ArrayList<String> list){
+		String[] array = new String[list.size()];
+		for(int i = 0; i < list.size(); i++){
+			array[i] = list.get(i);
+		}
+		return array;
+	}
+	
+	private String[] fractionListToString(ArrayList<Fraction> list){
+		String[] array = new String[list.size()];
+		for(int i = 0; i < list.size(); i++){
+			array[i] = list.get(i).toString();
+		}
+		return array;
 	}
 
 }

@@ -25,9 +25,11 @@ public class ResultActivity extends SherlockActivity {
 	private TableLayout table;
 	private Spinner spinner;
 	private ArrayList<TextView> matrixCells = new ArrayList<TextView>();
-	Matrix eigenVectorMatrix = null;
-	Matrix diagonalEigenvalueMatrix = null;
+	ArrayList<String> eigenVectorMatrix = null;
+	ArrayList<String> diagonalEigenvalueMatrix = null;
 	Resources resources;
+	private int matrixRows;
+	private int matrixCols;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -65,9 +67,13 @@ public class ResultActivity extends SherlockActivity {
 	}
 	
 	private void onEigenAction(Intent intent){
-		eigenVectorMatrix = (Matrix)intent.getSerializableExtra(MainActivity.EIGEN_VECTOR_MATRIX);
-		diagonalEigenvalueMatrix = (Matrix)intent.getSerializableExtra(MainActivity.DIAGONAL_EIGENVALUE_MATRIX);
-		double[] eigenValues = intent.getDoubleArrayExtra(MainActivity.EIGEN_VALUES);
+		String[] tmpEigenVectorMatrix = intent.getStringArrayExtra(MainActivity.EIGEN_VECTOR_MATRIX);
+		String[] tmpDiagonalEigenvalueMatrix = intent.getStringArrayExtra(MainActivity.DIAGONAL_EIGENVALUE_MATRIX);
+		String[] eigenValues = intent.getStringArrayExtra(MainActivity.EIGEN_VALUES);
+		matrixRows = intent.getIntExtra(MainActivity.ROWS, -1);
+		matrixCols = matrixRows;
+		diagonalEigenvalueMatrix = arrayToList(tmpEigenVectorMatrix);
+		eigenVectorMatrix = arrayToList(tmpDiagonalEigenvalueMatrix);
 		TextView tv = (TextView)findViewById(R.id.textView);
 		Resources res = this.getResources();
 		String text = res.getString(R.string.eigen_values) + " [";
@@ -118,31 +124,16 @@ public class ResultActivity extends SherlockActivity {
 		}
 	}
 	
-	private void showMatrix(Matrix matrix){
-		int matrixRows = matrix.getColumnDimension();
-		int matrixCols = matrix.getRowDimension(); 
-		eraseTable();
-		matrixCells.clear();
-		for(int i = 0; i < matrixRows*matrixCols; i++){
-			TextView tv = new TextView(this);
-			tv.setWidth(50);
-			tv.setHeight(50);
-			String element = (new Double(matrix.get(i/matrixCols, i%matrixCols))).toString();
-			element = handleLongNumber(element);
-			tv.setText(element);
-			matrixCells.add(tv);
-		}
-		for(int i = 0; i < matrixRows; i++){
-			TableRow rowTitle = new TableRow(this);
-			for(int j = 0; j < matrixCols; j++){
-				rowTitle.addView(matrixCells.get(i*matrixCols + j));
-			}
-			table.addView(rowTitle);
-		}
-	}
-	
 	private void eraseTable(){
 		table.removeAllViews();
+	}
+	
+	private ArrayList<String> arrayToList(String[] array){
+		ArrayList<String> list = new ArrayList<String>();
+		for(int i = 0; i < array.length; i++){
+			list.add(array[i]);
+		}
+		return list;
 	}
 	
 	private void setSpinnerContent(){
@@ -168,9 +159,9 @@ public class ResultActivity extends SherlockActivity {
 				long arg3) {
 			if(action == MainActivity.ACTION_EIGEN){
 				if(position == 0){
-					showMatrix(eigenVectorMatrix);
+					showStringMatrix(eigenVectorMatrix, matrixRows, matrixCols);
 				}else{
-					showMatrix(diagonalEigenvalueMatrix);
+					showStringMatrix(diagonalEigenvalueMatrix, matrixRows, matrixCols);
 				}
 			}
 		}
