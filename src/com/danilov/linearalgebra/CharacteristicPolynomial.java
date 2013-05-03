@@ -129,8 +129,8 @@ public class CharacteristicPolynomial {
 		ArrayList<Fraction> dividers = new ArrayList<Fraction>();
 		dividers.add(new Fraction(1));
 		dividers.add(num);
-		for(int i = 2; i < num.getNumerator()/2; i++){
-			int tmp = num.getNumerator();
+		int tmp = Math.abs(num.getNumerator());
+		for(int i = 2; i < tmp/2; i++){
 			if(tmp%i == 0){
 				dividers.add(new Fraction(i));
 			}
