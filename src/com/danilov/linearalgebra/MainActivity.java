@@ -132,6 +132,10 @@ public class MainActivity extends SherlockFragmentActivity {
 		eigen.solve();
 		ArrayList<Fraction> tmp = eigen.getEigenValues();
 		String[] eigenValues = fractionListToString(tmp);
+		if(eigenValues.length == 0){
+			easyDialog("There is no real eigen values!");
+			return;
+		}
 		Intent intent = new Intent(this, ResultActivity.class);
 		intent.setAction(resources.getStringArray(R.array.array_action)[curAction]);
 		intent.putExtra(EIGEN_VALUES, eigenValues);
@@ -143,28 +147,6 @@ public class MainActivity extends SherlockFragmentActivity {
 		startActivity(intent);
 	}
 
-	
-//	private void processEigen(){
-//		if(matrixCols != matrixRows){
-//			easyDialog("Matrix must be square");//TODO: USE RESOURCES, EVERYWHERE! RESOURCES!!!
-//			return;
-//		}
-//		Matrix matrix = getMatrixFromTable();
-//		if(matrix == null){
-//			return;
-//		}
-//		Eigen eigen = new Eigen(matrix);
-//		eigen.solve();
-//		Matrix eigenVectorMatrix = eigen.getEigenVectorMatrix();
-//		Matrix diagonalEigenvalueMatrix = eigen.getDiagonalEigenMatrix();
-//		double[] eigenValues = eigen.getEigenValues();
-//		Intent intent = new Intent(this, ResultActivity.class);
-//		intent.setAction(resources.getStringArray(R.array.array_action)[curAction]);
-//		intent.putExtra(EIGEN_VECTOR_MATRIX, eigenVectorMatrix);
-//		intent.putExtra(DIAGONAL_EIGENVALUE_MATRIX, diagonalEigenvalueMatrix);
-//		intent.putExtra(EIGEN_VALUES, eigenValues);
-//		startActivity(intent);
-//	}
 	
 	private void processDeterminantAndRank() {
 		Matrix matrix = getMatrixFromTable();

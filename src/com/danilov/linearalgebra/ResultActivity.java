@@ -39,6 +39,7 @@ public class ResultActivity extends SherlockActivity {
 		table = (TableLayout)findViewById(R.id.matrixTable);
 		spinner = (Spinner)findViewById(R.id.spinnerShow);
 		handleIntentAction(getIntent());
+		setSpinnerContent();
 	}
 	
 	private void handleIntentAction(Intent intent){
@@ -52,7 +53,6 @@ public class ResultActivity extends SherlockActivity {
 			action = MainActivity.ACTION_GAUSS;
 			onGaussAction(intent);
 		}
-		setSpinnerContent();
 	}
 	
 	private void onGaussAction(Intent intent){
