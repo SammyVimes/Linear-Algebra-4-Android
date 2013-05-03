@@ -84,12 +84,30 @@ public class MainActivity extends SherlockFragmentActivity {
         }
 	}
 	
+	private void test(){
+		String[] tmp = {"1", "0", "0", "0", "0", "1",
+					     "1", "1", "0", "0", "0","-1"
+					  , "-1", "1", "1", "0", "0","1"
+					  , "1", "-1", "1", "1", "0","-1"
+					  , "-1", "1", "-1", "1", "1", "1"
+					  , "1", "-1", "1", "-1", "1", "-1"};
+		ArrayList<String> matrix = new ArrayList<String>();
+		for(int i = 0; i < tmp.length; i++){
+			matrix.add(tmp[i]);
+		}
+		CharacteristicPolynomial cp = new CharacteristicPolynomial(matrix, 6, 6);
+		Fraction[] coeffs = cp.getPolynomial(6);
+		int a = 0;
+		a++;
+	}
+	
 	private void processGauss(){
 		ArrayList<String> matrix = getStringMatrixFromTable();
 		if(matrix == null){
 			easyDialog("Only integers are allowed for Gauss`s Method!");
 			return;
 		}
+		test();
 		Gauss gauss = new Gauss(matrix, matrixRows, matrixCols);
 		gauss.solve();
 		ArrayList<String> tmp = gauss.getMatrix();
