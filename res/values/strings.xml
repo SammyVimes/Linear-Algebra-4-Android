@@ -10,6 +10,10 @@
     <string name="determinant">Determinant =</string>
     <string name="rank">Rank =</string>
     <string name="eigen_values">Eigen values =</string>
-    <string name="title_activity_result">ResultActivity</string>
-
+    <string name="title_activity_result">Linear Algebra</string>
+    <!-- Warnings-->
+    <string name="warning_square">Matrix must be square</string>
+    <string name="warning_no_reals">There is no real eigen values!</string>
+    <string name="warning_determinant">Only square matrix has determinant!</string>
+    <string name="warning_non_valid">Matrix has non valid symbols</string>
 </resources>

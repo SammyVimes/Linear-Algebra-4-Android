@@ -64,6 +64,75 @@ public class Gauss {
 	    }
 	}
 	
+	
+	public void getEchelon(int canswapcols) {
+		Fraction[][] m = new Fraction[rows][columns];
+		for(int i = 0; i < rows; i++){
+			for(int j = 0; j < columns; j++){
+				m[i][j] = matrix.get(i*columns + j);
+			}
+		}
+		canswapcols = 0;
+		 int j;
+		 int k;
+		 int l;
+		 int last=columns-1;
+		 int z = Math.min(rows, columns);
+		 for(int i=0;i<z;i++) {
+			 k= i;
+			 while (k!= rows && m[k][i].cmp(0)==0) { //ищем ненулевой элемент в столбце i
+				 k++;
+				 if (k == rows) {
+					 if (last <= i){
+						 break;
+					 } else{
+					   if (canswapcols!=0) {
+				        //если в столбце все нули, то меняем его с последним...
+				        swapCols(i,last, m);
+				        last--;
+				        k = i;
+				       }
+					 }
+				 }
+			 }	
+		  
+			 if (k!=i && k!=  rows) {
+				 swapRows(k,i, m); 
+			 }
+			 if (k!= rows)
+				 for (j = 0; j < rows;j++) { 
+					 if (j == i) continue;
+					 for (l=i+1;l< columns;l++){
+						 m[j][l] = m[j][l].plus(m[j][i].inverse().divide(m[i][i]).multiply(m[i][l]) );
+					 }
+					 m[j][i] = new Fraction(0,1);
+				 }
+		 	}
+			for(int i = 0; i < rows; i++){
+				for(int v = 0; v < columns; v++){
+					matrix.set(i*columns + v, m[i][v]);
+				}
+			}
+	}
+	
+	void swapCols(int i,int j, Fraction a[][]) {
+		 Fraction t;
+		 for(int k=0;k<this.rows;k++) {
+			  t = a[k][i];
+			  a[k][i] = a[k][j];
+			  a[k][j] = t;
+		 }
+	}
+
+	void swapRows(int i,int j, Fraction a[][]) {
+		 Fraction t;
+		 for(int k=0;k< columns; k++) {
+			  t = a[i][k];
+			  a[i][k] = a[j][k];
+			  a[j][k] = t;
+		 }
+	}
+	
 	public ArrayList<String> getMatrix(){
 		ArrayList<String> matrix = new ArrayList<String>();
 		for(int i = 0; i < this.matrix.size(); i++){
@@ -82,7 +151,7 @@ public class Gauss {
 		}
 		for(int i = 0; i < rows; i++){
 			for(int j = 0; j < columns; j++){
-				if(m[i][j].getDenominator() != 0){
+				if(m[i][j].getDenominator() != 0 && m[i][j].getNumerator() != 0){
 					presented[j] = true;
 				}
 			}
@@ -105,6 +174,11 @@ public class Gauss {
 			tmpRoots[pos] = sum.divide(m[i][pos]);
 		}
 		for(int i = 0; i < tmpRoots.length; i++){
+			if(tmpRoots[i] == null){
+				tmpRoots[i] = new Fraction(1);
+			}
+		}
+		for(int i = 0; i < tmpRoots.length; i++){
 			roots[i] = tmpRoots[i].toString();
 		}
 		return roots;
@@ -124,7 +198,7 @@ public class Gauss {
 	private int getZeros(Fraction m[]){
 		int count = 0;
 		for(int i = 0; i < m.length; i++){
-			if(m[i].getDenominator() == 0){
+			if(m[i].getDenominator() == 0 || m[i].getNumerator() == 0){
 				count++;
 			}
 		}

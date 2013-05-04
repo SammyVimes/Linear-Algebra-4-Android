@@ -39,6 +39,13 @@ public class Fraction {
 		return powered;
 	}
 	
+	int cmp(Fraction f) {
+	    return (getNumerator()*f.getDenominator() - getDenominator()*f.getNumerator());
+	  }
+	  int cmp(int n) {
+	    return (getNumerator() - getDenominator()*n);
+	  }
+	
 	public Fraction multiply(Fraction multiplyValue){
 		Fraction result = null;
 		result = new Fraction(getNumerator()*multiplyValue.getNumerator(),

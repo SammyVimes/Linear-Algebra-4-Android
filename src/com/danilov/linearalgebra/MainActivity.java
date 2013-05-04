@@ -3,12 +3,19 @@ package com.danilov.linearalgebra;
 import java.util.ArrayList;
 
 import Jama.Matrix;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.inputmethodservice.KeyboardView;
 import android.os.Bundle;
 import android.text.InputType;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnFocusChangeListener;
+import android.view.View.OnTouchListener;
+import android.view.inputmethod.InputMethodManager;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
@@ -34,7 +41,7 @@ public class MainActivity extends SherlockFragmentActivity {
 	public static int ACTION_EIGEN = 1;
 	public static int ACTION_GAUSS = 2;
 	
-	
+	private MyKeyboard keyboard;
 	private Resources resources;
 	private int matrixRows = 2;
 	private int matrixCols = 2;
@@ -48,6 +55,9 @@ public class MainActivity extends SherlockFragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		resources = getResources();
+		keyboard = new MyKeyboard(this, R.id.keyboardView, R.xml.keyboard);
+		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+		
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, numbers);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         Spinner spinnerRows = (Spinner) findViewById(R.id.spinnerRows);
@@ -84,30 +94,11 @@ public class MainActivity extends SherlockFragmentActivity {
         }
 	}
 	
-	private void test(){
-		String[] tmp = {"-3","-1","1"
-					   ,"-8","4","1",
-					   "-8","8","-3"};
-		ArrayList<String> matrix = new ArrayList<String>();
-		for(int i = 0; i < tmp.length; i++){
-			matrix.add(tmp[i]);
-		}
-		CharacteristicPolynomial cp = new CharacteristicPolynomial(matrix, 3, 3);
-		Fraction[] coeffs = cp.getPolynomial(3);
-		cp.getEigenValues();
-		int a = 0;
-		a++;
-	}
 	
 	private void processGauss(){
 		ArrayList<String> matrix = getStringMatrixFromTable();
-		if(matrix == null){
-			easyDialog("Only integers are allowed for Gauss`s Method!");
-			return;
-		}
-		test();
 		Gauss gauss = new Gauss(matrix, matrixRows, matrixCols);
-		gauss.solve();
+		gauss.getEchelon(0);
 		ArrayList<String> tmp = gauss.getMatrix();
 		String[] solvedMatrix = new String[tmp.size()];
 		solvedMatrix = listToString(tmp);
@@ -121,7 +112,8 @@ public class MainActivity extends SherlockFragmentActivity {
 	
 	private void processEigen(){
 		if(matrixCols != matrixRows){
-			easyDialog("Matrix must be square");//TODO: USE RESOURCES, EVERYWHERE! RESOURCES!!!
+			String message = resources.getString(R.string.warning_square);
+			easyDialog(message);
 			return;
 		}
 		ArrayList<String> matrix = getStringMatrixFromTable();
@@ -133,7 +125,8 @@ public class MainActivity extends SherlockFragmentActivity {
 		ArrayList<Fraction> tmp = eigen.getEigenValues();
 		String[] eigenValues = fractionListToString(tmp);
 		if(eigenValues.length == 0){
-			easyDialog("There is no real eigen values!");
+			String message = resources.getString(R.string.warning_no_reals);
+			easyDialog(message);
 			return;
 		}
 		Intent intent = new Intent(this, ResultActivity.class);
@@ -167,7 +160,8 @@ public class MainActivity extends SherlockFragmentActivity {
 		if(isSquare){
 			message = message + det + " " + matrixDeterminant;
 		}else{
-			message = message + "Only square matrix has determinant!";
+			String warning = resources.getString(R.string.warning_determinant);
+			message = message + warning;
 		}
 		easyDialog(message);
 	}
@@ -203,17 +197,12 @@ public class MainActivity extends SherlockFragmentActivity {
 	
 	private ArrayList<String> getStringMatrixFromTable(){
 		ArrayList<String> matrix = new ArrayList<String>();
-		boolean hasNonValidSymbols = false;
 		for(int i = 0; i < editableTextFields.size(); i++){
 			String tmp = editableTextFields.get(i).getText().toString();
-			if(hasInvalidForGaussSymbols(tmp)){
-				hasNonValidSymbols = true;
-				break;
+			if(tmp.equals("")){
+				tmp = "0";
 			}
 			matrix.add(tmp);
-		}
-		if(hasNonValidSymbols){
-			matrix = null;
 		}
 		return matrix;
 		
@@ -221,21 +210,13 @@ public class MainActivity extends SherlockFragmentActivity {
 	
 	private boolean hasInvalidSymbols(String string){
 		boolean result = false;
-		if(string.contains(":")){
-			easyDialog("Matrix has non valid symbols");
+		if(string.contains("/")){
+			easyDialog(resources.getString(R.string.warning_non_valid));
 			result = true;
 		}
 		return result;
 	}
 	
-	private boolean hasInvalidForGaussSymbols(String string){
-		boolean result = false;
-		if(string.contains(":") || string.contains(".") || string.contains(",")){
-			easyDialog("Matrix has non valid symbols");
-			result = true;
-		}
-		return result;
-	}
 	
 	private String handleSlashSymbol(String string){
 		String result;
@@ -255,10 +236,16 @@ public class MainActivity extends SherlockFragmentActivity {
 		eraseTable();
 		editableTextFields.clear();
 		for(int i = 0; i < matrixRows*matrixCols; i++){
-			EditText et = new EditText(this);
+			MyEditText et = new MyEditText(this);
+			et.setInputType(InputType.TYPE_NULL);
+			et.setOnFocusChangeListener(new MyOnFocusChangeListener());
+			et.setOnClickListener(new OnClickListener() {
+			    @Override public void onClick(View v) {
+			        keyboard.showCustomKeyboard(v);
+			    }
+			});
 			et.setWidth(50);
 			et.setHeight(50);
-			et.setInputType(InputType.TYPE_CLASS_DATETIME);
 			editableTextFields.add(et);
 		}
 		for(int i = 0; i < matrixRows; i++){
@@ -401,6 +388,24 @@ public class MainActivity extends SherlockFragmentActivity {
 			array[i] = list.get(i).toString();
 		}
 		return array;
+	}
+	
+	private class MyOnFocusChangeListener implements OnFocusChangeListener{
+		@Override public void onFocusChange(View v, boolean hasFocus) {
+	        if( hasFocus ){
+	        	keyboard.showCustomKeyboard(v);
+	        }else {
+	        	keyboard.hideCustomKeyboard();
+	        }
+	    }
+	}
+	
+	@Override public void onBackPressed() {
+	    if(keyboard.isCustomKeyboardVisible()) {
+	    	keyboard.hideCustomKeyboard(); 
+	    }else{
+	    	 this.finish();
+	    }
 	}
 
 }

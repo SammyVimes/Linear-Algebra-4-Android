@@ -1,11 +1,17 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+    <ScrollView 
         android:id="@+id/scrollView1"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" >
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/keyboardView"
+         >
 
 	<RelativeLayout
+	    android:id="@+id/rel"
 	    android:layout_width="match_parent"
-	    android:layout_height="wrap_content">
+	    android:layout_height="match_parent" >
 	
 	    <TextView
 	        android:id="@+id/textView1"
@@ -67,3 +73,13 @@
 	
 	</RelativeLayout>
 </ScrollView>
+     <android.inputmethodservice.KeyboardView
+                    android:id="@+id/keyboardView"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:visibility="gone" />
+</RelativeLayout>

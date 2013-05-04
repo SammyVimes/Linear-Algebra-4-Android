@@ -6,6 +6,7 @@ import Jama.Matrix;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -108,9 +109,10 @@ public class ResultActivity extends SherlockActivity {
 		eraseTable();
 		matrixCells.clear();
 		for(int i = 0; i < rows*columns; i++){
-			TextView tv = new TextView(this);
+			MyTextView tv = new MyTextView(this);
 			tv.setWidth(50);
 			tv.setHeight(50);
+			tv.setGravity(Gravity.CENTER);
 			String element = matrix.get(i);
 			tv.setText(element);
 			matrixCells.add(tv);

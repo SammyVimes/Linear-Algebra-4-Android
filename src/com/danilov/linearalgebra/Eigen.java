@@ -22,7 +22,7 @@ public class Eigen {
 	
 	public void solve(){
 		cp = new CharacteristicPolynomial(matrix, matrixRows, matrixCols);
-		polynomial = cp.getPolynomial(3);
+		polynomial = cp.getPolynomial(matrixRows);
 		eigenValues = cp.getEigenValues();
 	}
 	
@@ -56,7 +56,7 @@ public class Eigen {
 		for(int i = 0; i < eigenValues.size(); i++){
 			ArrayList<String> matrix = getMatrixWithEigenNumbers(eigenValues.get(i));
 			Gauss g = new Gauss(matrix, matrixRows, matrixCols);
-			g.solve();
+			g.getEchelon(0);
 			String[] roots = g.getRoots();
 			for(int j = 0; j < matrixCols; j++){
 				eigenVectorMatrix[j*matrixCols + count] = roots[j];
