@@ -11,7 +11,7 @@
         name="array_spinner_actions">
         <item>Determinant and rank</item>
         <item>Eigen</item>
-        <item>Gauss</item>
+        <item>Gauss Elimination</item>
     </string-array>
     
     <string-array

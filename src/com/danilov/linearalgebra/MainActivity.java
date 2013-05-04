@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 
 public class MainActivity extends SherlockFragmentActivity {
 	
@@ -45,7 +46,7 @@ public class MainActivity extends SherlockFragmentActivity {
 	private Resources resources;
 	private int matrixRows = 2;
 	private int matrixCols = 2;
-	private ArrayList<EditText> editableTextFields = new ArrayList<EditText>();
+	private ArrayList<MyEditText> editableTextFields = new ArrayList<MyEditText>();
 	private TableLayout table;
 	private int curAction = 0;
 	String[] numbers = {"2", "3", "4", "5", "6"};
@@ -361,6 +362,16 @@ public class MainActivity extends SherlockFragmentActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getSupportMenuInflater().inflate(R.menu.activity_main, menu);
 		return true;
+	}
+	
+	@Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+		switch(item.getItemId()){
+			case R.id.menu_settings:
+				easyDialog(resources.getString(R.string.about));
+				break;
+		}
+		return super.onOptionsItemSelected(item);
 	}
 	
 	private void toaster(String message){

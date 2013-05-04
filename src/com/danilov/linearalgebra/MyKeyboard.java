@@ -1,8 +1,11 @@
 package com.danilov.linearalgebra;
 
+import java.util.List;
+
 import android.app.Activity;
 import android.content.Context;
 import android.inputmethodservice.Keyboard;
+import android.inputmethodservice.Keyboard.Key;
 import android.inputmethodservice.KeyboardView;
 import android.inputmethodservice.KeyboardView.OnKeyboardActionListener;
 import android.text.Editable;
@@ -48,7 +51,7 @@ public class MyKeyboard implements OnKeyListener, OnKeyboardActionListener{
 	public void onKey(int primaryCode, int[] arg1) {
 		View focusCurrent = mHostActivity.getWindow().getCurrentFocus();
 	    if( focusCurrent==null || focusCurrent.getClass()!=MyEditText.class ) return;
-	    EditText edittext = (EditText) focusCurrent;
+	    MyEditText edittext = (MyEditText) focusCurrent;
 	    Editable editable = edittext.getText();
 	    int start = edittext.getText().length();
 	    // Handle key

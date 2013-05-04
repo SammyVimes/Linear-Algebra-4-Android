@@ -340,6 +340,7 @@ int layout sherlock_spinner_dropdown_item 0x7f030019
 int layout sherlock_spinner_item 0x7f03001a
 int menu activity_main 0x7f0d0000
 int menu activity_result 0x7f0d0001
+int string about 0x7f0a0019
 int string abs__action_bar_home_description 0x7f0a0000
 int string abs__action_bar_up_description 0x7f0a0001
 int string abs__action_menu_overflow_description 0x7f0a0002
@@ -365,10 +366,10 @@ int string menu_settings 0x7f0a0011
 int string ok 0x7f0a0014
 int string rank 0x7f0a0016
 int string title_activity_result 0x7f0a0018
-int string warning_determinant 0x7f0a001b
-int string warning_no_reals 0x7f0a001a
-int string warning_non_valid 0x7f0a001c
-int string warning_square 0x7f0a0019
+int string warning_determinant 0x7f0a001c
+int string warning_no_reals 0x7f0a001b
+int string warning_non_valid 0x7f0a001d
+int string warning_square 0x7f0a001a
 int style AppBaseTheme 0x7f0b0059
 int style AppTheme 0x7f0b005a
 int style DialogWindowTitle_Sherlock 0x7f0b0036

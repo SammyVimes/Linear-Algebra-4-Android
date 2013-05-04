@@ -1027,6 +1027,7 @@ containing a value of this type.
         public static final int activity_result=0x7f0d0001;
     }
     public static final class string {
+        public static final int about=0x7f0a0019;
         /**  Content description for the action bar "home" affordance. [CHAR LIMIT=NONE] 
          */
         public static final int abs__action_bar_home_description=0x7f0a0000;
@@ -1082,13 +1083,13 @@ containing a value of this type.
         public static final int ok=0x7f0a0014;
         public static final int rank=0x7f0a0016;
         public static final int title_activity_result=0x7f0a0018;
-        public static final int warning_determinant=0x7f0a001b;
-        public static final int warning_no_reals=0x7f0a001a;
-        public static final int warning_non_valid=0x7f0a001c;
+        public static final int warning_determinant=0x7f0a001c;
+        public static final int warning_no_reals=0x7f0a001b;
+        public static final int warning_non_valid=0x7f0a001d;
         /**  Warnings
  Warnings
          */
-        public static final int warning_square=0x7f0a0019;
+        public static final int warning_square=0x7f0a001a;
     }
     public static final class style {
         /** 

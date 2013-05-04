@@ -3,14 +3,15 @@
 
     <string name="app_name">Линейная Алегбра</string>
     <string name="enter_matrix">Тук-тук, Нео</string>
-    <string name="menu_settings">Настройки (нет)</string>
-    <string name="enjoy">Enjoy</string>
+    <string name="menu_settings">О приложении</string>
+    <string name="enjoy">Ложки нет</string>
     <string name="action">ОК</string>
     <string name="ok">OK</string>
     <string name="determinant">Определитель =</string>
     <string name="rank">Ранг =</string>
     <string name="eigen_values">Собственные числа =</string>
     <string name="title_activity_result">Линейная Алегбра</string>
+    <string name="about">Данилов Семён, 2013</string>
     <!-- Warnings-->
     <string name="warning_square">Матрица должна быть квадратной</string>
     <string name="warning_no_reals">Нет вещественных собственных чисел</string>
