@@ -4,11 +4,13 @@ import java.util.ArrayList;
 
 import Jama.Matrix;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.inputmethodservice.KeyboardView;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -38,9 +40,10 @@ public class MainActivity extends SherlockFragmentActivity {
 	public static String EIGEN_VALUES = "EIGEN_VALUES";
 	public static String DIAGONAL_EIGENVALUE_MATRIX = "DIAGONAL_EIGENVALUE_MATRIX";
 	public static String EIGEN_VECTOR_MATRIX = "EIGEN_VECTOR_MATRIX";
-	public static int ACTION_DETERMINANT = 0;
-	public static int ACTION_EIGEN = 1;
-	public static int ACTION_GAUSS = 2;
+	public static final int ACTION_DETERMINANT = 0;
+	public static final int ACTION_EIGEN = 1;
+	public static final int ACTION_GAUSS = 2;
+	public static final int ACTION_INVERSE = 3;
 	
 	private MyKeyboard keyboard;
 	private Resources resources;
@@ -93,6 +96,26 @@ public class MainActivity extends SherlockFragmentActivity {
         }else{
         	updateMatrixTable();
         }
+	}
+	
+	private void processInverse(){
+		ArrayList<String> matrix = getStringMatrixFromTable();
+		Gauss gauss = new Gauss(matrix, matrixRows, matrixCols);
+		boolean result = gauss.getInverse();
+		if(!result){
+			String message = resources.getString(R.string.warning_no_inverse);
+			easyDialog(message);
+			return;
+		}
+		ArrayList<String> tmp = gauss.getMatrix();
+		String[] inverseMatrix = new String[tmp.size()];
+		inverseMatrix = listToString(tmp);
+		Intent intent = new Intent(this, ResultActivity.class);
+		intent.setAction(resources.getStringArray(R.array.array_action)[curAction]);
+		intent.putExtra(ROWS, matrixRows);
+		intent.putExtra(COLUMNS, matrixCols);
+		intent.putExtra(MATRIX, inverseMatrix);
+		startActivity(intent);
 	}
 	
 	
@@ -238,8 +261,8 @@ public class MainActivity extends SherlockFragmentActivity {
 		editableTextFields.clear();
 		for(int i = 0; i < matrixRows*matrixCols; i++){
 			MyEditText et = new MyEditText(this);
-			et.setInputType(InputType.TYPE_NULL);
 			et.setOnFocusChangeListener(new MyOnFocusChangeListener());
+			et.setInputType(InputType.TYPE_NULL);
 			et.setOnClickListener(new OnClickListener() {
 			    @Override public void onClick(View v) {
 			        keyboard.showCustomKeyboard(v);
@@ -263,12 +286,19 @@ public class MainActivity extends SherlockFragmentActivity {
 	}
 	
 	private void onActionButtonPressed(int action){
-		if(action == ACTION_EIGEN){
+		switch(action){
+		case ACTION_EIGEN:
 			processEigen();
-		}else if(action == ACTION_DETERMINANT){
+			break;
+		case ACTION_DETERMINANT:
 			processDeterminantAndRank();
-		}else if(action == ACTION_GAUSS){
+			break;
+		case ACTION_GAUSS:
 			processGauss();
+			break;
+		case ACTION_INVERSE:
+			processInverse();
+			break;
 		}
 	}
 
@@ -309,15 +339,7 @@ public class MainActivity extends SherlockFragmentActivity {
 					}
 					break;
 				case R.id.spinnerActions:
-					if(position == ACTION_EIGEN){
-						curAction = ACTION_EIGEN;
-					}
-					if(position == ACTION_DETERMINANT){
-						curAction = ACTION_DETERMINANT;
-					}
-					if(position == ACTION_GAUSS){
-						curAction = ACTION_GAUSS;
-					}
+					curAction = position;
 					break;
 			}
 		}

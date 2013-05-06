@@ -1084,6 +1084,7 @@ containing a value of this type.
         public static final int rank=0x7f0a0016;
         public static final int title_activity_result=0x7f0a0018;
         public static final int warning_determinant=0x7f0a001c;
+        public static final int warning_no_inverse=0x7f0a001e;
         public static final int warning_no_reals=0x7f0a001b;
         public static final int warning_non_valid=0x7f0a001d;
         /**  Warnings

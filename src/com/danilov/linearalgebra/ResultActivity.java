@@ -54,6 +54,21 @@ public class ResultActivity extends SherlockActivity {
 			action = MainActivity.ACTION_GAUSS;
 			onGaussAction(intent);
 		}
+		if(intentAction.equals(actions[MainActivity.ACTION_INVERSE])){
+			action = MainActivity.ACTION_INVERSE;
+			onInverseAction(intent);
+		}
+	}
+	
+	private void onInverseAction(Intent intent){
+		String[] tmp = intent.getStringArrayExtra(MainActivity.MATRIX);
+		int rows = intent.getIntExtra(MainActivity.ROWS, -1);
+		int columns = intent.getIntExtra(MainActivity.COLUMNS, -1);
+		ArrayList<String> matrix = new ArrayList<String>();
+		for(int i = 0; i < tmp.length; i++){
+			matrix.add(tmp[i]);
+		}
+		showStringMatrix(matrix, rows, columns);
 	}
 	
 	private void onGaussAction(Intent intent){

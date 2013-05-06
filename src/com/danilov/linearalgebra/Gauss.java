@@ -17,61 +17,80 @@ public class Gauss {
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
-	public void solve(){
-		ArrayList<Fraction> tmpMatrix = (ArrayList<Fraction>)matrix.clone();
-		int count;
-		int val = columns;
-		if(rows < columns){
-			val = rows;
-		}
-		int max = columns;
-		if(rows > columns){
-			max = rows;
-		}
-		for (int i = 0; i < columns; i++){
-			if(i < val){
-		        if (matrix.get(i*columns + i).toString().equals("0") && i < rows-1){
-			        count = i;
-			        Fraction tmp = null;
-			            do{
-				            count++;
-				            if(count*columns < columns*rows){
-				            	tmp = matrix.get(count*columns);
-				            }
-			            }while(tmp.toString().equals("0") && count < max);
-			            if(count < rows){
-			            	matrix = swapLine(matrix, count, i);
-			            }
-		        } 
-			}
-	        
-	        for (int x = 0; x < rows; x++){
-	            for (int y = 0; y < columns; y++){
-	            	tmpMatrix.set(x * columns + y, matrix.get(x * columns + y));
-	            }
-	        }
-        
-	        for (int j = i + 1; j < rows; j++){
-	            for (int k = i; k < columns; k++){
-	                Fraction tmp1 = matrix.get(j * columns + k);
-	                Fraction tmp2 = matrix.get(i * columns + k).multiply(tmpMatrix.get(j * columns + i));
-	                Fraction tmp3 = tmp2.divide(matrix.get(i * columns + i));
-	                Fraction res = tmp1.plus(tmp3.multiply(new Fraction(-1,1)));
-	                matrix.set(j * columns + k, res);
-	            }                
-	        }
-	    }
+	public Gauss(int rows, int columns){
+		this.columns = columns;
+		this.rows = rows;
 	}
 	
+	public boolean getInverse(){
+		Fraction[][] ed = new Fraction[rows][rows];
+		for(int i = 0; i < rows; i++){
+			for(int j = 0; j < rows; j++){
+				ed[i][j] = (i == j? new Fraction(1):new Fraction(0));
+			}
+		}
+		Fraction[][] m  = getAugmented(ed, getMatrixFromList(matrix));
+		Gauss gauss = new Gauss(rows, columns*2);
+		gauss.putMatrixToList(m);
+		gauss.getEchelon(0);
+		Fraction[][] m1 = gauss.getMatrixFromList(gauss.matrix);
+	    int i,j;
+	    Fraction t;
+	    for(i=0;i < rows;i++) {
+	      t = m1[i][i];
+	      if (t.cmp(0)!=0) {
+	        for(j=0;j < columns*2;j++)  //делим строчку на t
+	          m1[i][j] = m1[i][j].divide(t);
+	      }else{
+	        // Опред = 0! Обратная не сущ.!
+	        return false;
+	      }	  
+	    }
+	    // "отделяем вторую половину"
+	    Fraction[][] m2 = new Fraction[rows][columns];
+	    for(i=0;i<rows;i++){
+		      for(j=0;j<columns;j++){
+		    	  m2[i][j]= m1[i][j + columns];
+		      }
+	    }
+	    putMatrixToList(m2);
+	    return true;
+	}
 	
-	public void getEchelon(int canswapcols) {
+	private Fraction[][] getAugmented(Fraction[][] unitary, Fraction[][] m){
+		Fraction[][] n = new Fraction[rows][columns*2];
+		    for(int i = 0; i < rows; i++){
+			      for(int j= 0;j < columns*2;j++){
+			    	  n[i][j] = (j < columns?m[i][j]:unitary[i][j-columns]);
+			      }
+		    }
+		return n;
+	}
+	
+	public Fraction[][] getMatrixFromList(ArrayList<Fraction> list){
 		Fraction[][] m = new Fraction[rows][columns];
 		for(int i = 0; i < rows; i++){
 			for(int j = 0; j < columns; j++){
 				m[i][j] = matrix.get(i*columns + j);
 			}
 		}
+		return m;
+	}
+	
+	public void putMatrixToList(Fraction[][] m){
+		ArrayList<Fraction> list = new ArrayList<Fraction>();
+		for(int i = 0; i < rows; i++){
+			for(int v = 0; v < columns; v++){
+				list.add(m[i][v]);
+			}
+		}
+		matrix = list;
+	}
+	
+	
+	public void getEchelon(int canswapcols) {
+		Fraction[][] m = new Fraction[rows][columns];
+		m = getMatrixFromList(matrix);
 		canswapcols = 0;
 		 int j;
 		 int k;
@@ -101,18 +120,16 @@ public class Gauss {
 			 }
 			 if (k!= rows)
 				 for (j = 0; j < rows;j++) { 
-					 if (j == i) continue;
+					 if (j == i){
+						 continue;
+					 }
 					 for (l=i+1;l< columns;l++){
 						 m[j][l] = m[j][l].plus(m[j][i].inverse().divide(m[i][i]).multiply(m[i][l]) );
 					 }
 					 m[j][i] = new Fraction(0,1);
 				 }
 		 	}
-			for(int i = 0; i < rows; i++){
-				for(int v = 0; v < columns; v++){
-					matrix.set(i*columns + v, m[i][v]);
-				}
-			}
+		 putMatrixToList(m);	
 	}
 	
 	void swapCols(int i,int j, Fraction a[][]) {

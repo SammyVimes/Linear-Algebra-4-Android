@@ -5,6 +5,7 @@
         <item>ACTION_DETERMINANT</item>
         <item>ACTION_EIGEN</item>
         <item>ACTION_GAUSS</item>
+        <item>ACTION_INVERSE</item>
     </string-array>
     
     <string-array
@@ -12,6 +13,7 @@
         <item>Determinant and rank</item>
         <item>Eigen</item>
         <item>Gauss Elimination</item>
+        <item>Inverse matrix</item>
     </string-array>
     
     <string-array

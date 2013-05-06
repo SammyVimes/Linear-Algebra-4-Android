@@ -4,7 +4,7 @@
     <string name="app_name">Linear Algebra</string>
     <string name="enter_matrix">Enter the matrix</string>
     <string name="menu_settings">About</string>
-    <string name="enjoy">Enjoy</string>
+    <string name="enjoy">The matrix has you</string>
     <string name="action">OK</string>
     <string name="ok">OK</string>
     <string name="determinant">Determinant =</string>
@@ -17,4 +17,5 @@
     <string name="warning_no_reals">There is no real eigen values!</string>
     <string name="warning_determinant">Only square matrix has determinant!</string>
     <string name="warning_non_valid">Matrix has non valid symbols</string>
+    <string name="warning_no_inverse">There is no inverse matrix</string>
 </resources>
