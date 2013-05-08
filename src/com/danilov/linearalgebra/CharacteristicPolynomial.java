@@ -74,10 +74,23 @@ public class CharacteristicPolynomial {
 		return coeffs;
 	}
 	
+	private int getLastPos(){
+		int pos = 0;
+		for(int i = 0; i < polynom.length; i++){
+			if(polynom[i].getNumerator() != 0 && polynom[i].getDenominator() != 0){
+				pos = i;
+			}
+		}
+		return pos;
+	}
+	
 	public ArrayList<Fraction> getEigenValues(){
 		ArrayList<Fraction> eigenValues = new ArrayList<Fraction>();
 		ArrayList<Fraction> possibleRoots = new ArrayList<Fraction>();
-		ArrayList<Fraction> p = getDividers(polynom[polynom.length - 1]);
+		ArrayList<Fraction> p = getDividers(polynom[getLastPos()]);
+		if(getLastPos() != polynom.length - 1){
+			possibleRoots.add(new Fraction(0));
+		}
 		ArrayList<Fraction> q = getDividers(polynom[0]);
 		for(int i = 0; i < p.size(); i++){
 			for(int j = 0; j < q.size(); j++){

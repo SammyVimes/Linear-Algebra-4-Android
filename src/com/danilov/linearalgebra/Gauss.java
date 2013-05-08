@@ -172,8 +172,9 @@ public class Gauss {
 					presented[j] = true;
 				}
 			}
-			if(getZeros(m[i]) == columns - 1 && presented[i]){
-				tmpRoots[i] = new Fraction(0); 
+			int pos = notNullPosition(m[i]);
+			if(getZeros(m[i]) == columns - 1 && presented[pos]){
+				tmpRoots[pos] = new Fraction(0); 
 			}
 		}
 		for(int i = m.length - 1; i >= 0; i--){
@@ -188,7 +189,19 @@ public class Gauss {
 				}
 				sum = sum.plus(tmpRoots[j].multiply(m[i][j]).inverse());
 			}
-			tmpRoots[pos] = sum.divide(m[i][pos]);
+			if(tmpRoots[pos] != null){
+				if(tmpRoots[pos].getNumerator() != 0 && tmpRoots[pos].getDenominator() != 0){
+					tmpRoots[pos] = sum.divide(m[i][pos]);
+				}else{
+					for(int k = 0; k < m.length; k++){
+						if(m[i][k].getNumerator() != 0 && m[i][k].getDenominator() != 0 && k != pos){
+							tmpRoots[k] = new Fraction(0);
+						}
+					}
+				}
+			}else{
+				tmpRoots[pos] = sum.divide(m[i][pos]);
+			}
 		}
 		for(int i = 0; i < tmpRoots.length; i++){
 			if(tmpRoots[i] == null){
