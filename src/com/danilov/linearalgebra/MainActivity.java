@@ -91,7 +91,7 @@ public class MainActivity extends SherlockFragmentActivity {
         	matrixCols = savedInstanceState.getInt(COLUMNS);
             spinnerCols.setSelection(matrixCols - 2);
             spinnerRows.setSelection(matrixRows - 2);
-        	Matrix matrix = (Matrix)savedInstanceState.getSerializable(MATRIX);
+            ArrayList<String> matrix = (ArrayList<String>)savedInstanceState.getSerializable(MATRIX);
         	restoreMatrixState(matrix);
         }else{
         	updateMatrixTable();
@@ -198,14 +198,9 @@ public class MainActivity extends SherlockFragmentActivity {
 			for(int j = 0; j < matrixCols; j++){
 				EditText et = editableTextFields.get(i*matrixCols + j);
 				String tmp = et.getText().toString();
-				if(hasInvalidSymbols(tmp)){
-					hasNonValidSymbols = true;
-					break;
-				}else{
-					tmp = handleSlashSymbol(tmp);
-					if(!tmp.equals("")){
-						values[i][j] = new Double(tmp);
-					}
+				tmp = handleSlashSymbol(tmp);
+				if(!tmp.equals("")){
+					values[i][j] = new Double(tmp);
 				}
 			}
 			if(hasNonValidSymbols){
@@ -230,15 +225,6 @@ public class MainActivity extends SherlockFragmentActivity {
 		}
 		return matrix;
 		
-	}
-	
-	private boolean hasInvalidSymbols(String string){
-		boolean result = false;
-		if(string.contains("/")){
-			easyDialog(resources.getString(R.string.warning_non_valid));
-			result = true;
-		}
-		return result;
 	}
 	
 	
@@ -350,11 +336,10 @@ public class MainActivity extends SherlockFragmentActivity {
 		
 	}
 	
-	private void restoreMatrixState(Matrix matrix){
+	private void restoreMatrixState(ArrayList<String> matrix){
 		updateMatrixTable();
 		for(int i = 0; i < editableTextFields.size(); i++){
-			double element = Double.valueOf(matrix.get(i/matrixCols, i%matrixCols));
-			editableTextFields.get(i).setText(getProperDoubles(new String(element + "")));
+			editableTextFields.get(i).setText(matrix.get(i));
 		}
 	}
 	
@@ -371,11 +356,11 @@ public class MainActivity extends SherlockFragmentActivity {
 	
 	@Override
 	public void onSaveInstanceState(Bundle state){
-		Matrix m = getMatrixFromTable();
+		ArrayList<String> m = getStringMatrixFromTable();
 		if(m != null){
 			state.putSerializable(MATRIX, m);
-			state.putInt(ROWS, m.getRowDimension());
-			state.putInt(COLUMNS, m.getColumnDimension());
+			state.putInt(ROWS, matrixRows);
+			state.putInt(COLUMNS, matrixCols);
 		}
 		super.onSaveInstanceState(state);
 	}
